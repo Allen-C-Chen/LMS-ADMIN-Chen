@@ -25,8 +25,6 @@ public class BookLoanID implements Serializable{
 	@NotNull
 	@ManyToOne
 	@JoinColumn (name = "cardNo")
-	
-	
 	private Borrower borrower;
 	
 	

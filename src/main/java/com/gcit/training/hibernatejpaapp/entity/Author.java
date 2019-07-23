@@ -18,6 +18,27 @@ public class Author {
 	private Integer authorId;
     @Column(name = "authorName")
 	private String authorName;
+
+    
+	public Author() {
+		super();
+	}
+	
+	public Author(Integer authorId) {
+		super();
+		this.authorId = authorId;
+	}
+
+	public Author(String authorName) {
+		super();
+		this.authorName = authorName;
+	}
+
+	public Author(Integer authorId, String authorName) {
+		super();
+		this.authorId = authorId;
+		this.authorName = authorName;
+	}
 	public Integer getAuthorId() {
 		return authorId;
 	}

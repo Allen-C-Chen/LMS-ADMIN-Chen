@@ -27,110 +27,53 @@ import com.gcit.training.hibernatejpaapp.entity.Author;
 import com.gcit.training.hibernatejpaapp.entity.BookLoan;
 import com.gcit.training.hibernatejpaapp.entity.BookLoanID;
 import com.gcit.training.hibernatejpaapp.entity.LibraryBranch;
+import com.gcit.training.hibernatejpaapp.service.BookLoanService;
 
 @RestController
 @RequestMapping("/lms/admin")
 public class BookLoanAdminController {
 	@Autowired
-	private BookLoanDao bookLoanDao;
+	private BookLoanService bookLoanService;
+
 	
-	@Autowired
-	private BookDao bookDao;
-	@Autowired
-	private BorrowerDao borrowerDao;
-	@Autowired
-	private LibraryBranchDao libraryBranchDao;
-	
-	@GetMapping("/book/checkout")//fix name
-	public List<BookLoan> getAllBookLoans() {
-		return bookLoanDao.findAll();
+	@GetMapping(value = "/loaned-books",
+			produces = {"application/json", "application/xml"}) 
+	public ResponseEntity<List<BookLoan>> getAllBookLoans() {
+		return bookLoanService.getAllBookLoans();
 	}
 	//borrower/{cardNo}/book
-	@GetMapping("/bookloan/librarybranch/{libBranchId}/book/{bookId}/borrower/{cardNo}")
+	@GetMapping(
+			value = "/loaned-book/librarybranch/{libBranchId}/book/{bookId}/borrower/{cardNo}",
+			produces = {"application/json", "application/xml"})//R
 	public ResponseEntity<BookLoan> getBookLoanByID(@PathVariable Integer libBranchId,
 			@PathVariable Integer bookId,
 			@PathVariable Integer cardNo) {
-		
-		if(libBranchId == null || bookId == null || cardNo == null) {
-			return new ResponseEntity<BookLoan>(HttpStatus.BAD_REQUEST);
-		}
-
-		try {
-			Optional<BookLoan> bookLoan = bookLoanDao.findById(
-					new BookLoanID(
-					libraryBranchDao.findById(libBranchId).get(), 
-					bookDao.findById(bookId).get(), 
-					borrowerDao.findById(cardNo).get()));
-			
-			return new ResponseEntity<BookLoan>(bookLoan.get(), HttpStatus.OK); 
-		}
-		catch(EmptyResultDataAccessException e){
-		    return new ResponseEntity<BookLoan>(HttpStatus.NOT_FOUND); //404
-		}
+	    return bookLoanService.getBookLoanById(libBranchId, bookId, cardNo);
 	}
-	@PutMapping("/bookloan/librarybranch/{libBranchId}/book/{bookId}/borrower/{cardNo}/override/checkoutdate")
+	@PutMapping(
+			value = "/loaned-book/librarybranch/{libBranchId}/book/{bookId}/borrower/{cardNo}/override/checkoutdate",
+			consumes = {"application/json", "application/xml"},
+			produces = {"application/json", "application/xml"})  //U
 	public ResponseEntity<BookLoan> overrideCheckOutDate(
 			@PathVariable Integer libBranchId,
 			@PathVariable Integer bookId,
 			@PathVariable Integer cardNo,
 			@RequestBody BookLoan bookLoanData) {
-		if(libBranchId == null || bookId == null || cardNo == null || bookLoanData == null) {
-			return new ResponseEntity<BookLoan>(HttpStatus.BAD_REQUEST);
+			return bookLoanService.overrideCheckOutDate(
+					libBranchId, bookId, cardNo, bookLoanData);
 		}
-		try {
-			Optional<BookLoan> bookLoan = bookLoanDao.findById(
-					new BookLoanID(
-					libraryBranchDao.findById(libBranchId).get(), 
-					bookDao.findById(bookId).get(), 
-					borrowerDao.findById(cardNo).get()));
-			if(bookLoan == null) {
-			    return new ResponseEntity<BookLoan>(HttpStatus.NOT_FOUND); //404
-			}
-			
-			bookLoan.get().setDateReturn(bookLoanData.getDateReturn());
-			bookLoanDao.save(bookLoan.get());
-			
-			return new ResponseEntity<BookLoan>(HttpStatus.CREATED); 
-		}
-		catch(EmptyResultDataAccessException e){
-		    return new ResponseEntity<BookLoan>(HttpStatus.NOT_FOUND); //404
-		}
-	}
 	// Create a new Note
-	@PostMapping("/bookloan") //C
+	@PostMapping(value = "/loaned-book",
+			consumes = {"application/json", "application/xml"},
+			produces = {"application/json", "application/xml"})//C
 	public ResponseEntity<BookLoan> createBookLoan(@Valid @RequestBody BookLoan bookLoan) {
-
-		try {
-			if(bookLoan.getBookLoanID() == null || bookLoan.getDateOut() == null 
-					|| bookLoan.getDateReturn() == null) {
-			    return new ResponseEntity<BookLoan>(HttpStatus.BAD_REQUEST); //400
-
-			}
-			BookLoan newBookLoan =  bookLoanDao.save(bookLoan);
-			return new ResponseEntity<BookLoan>(newBookLoan, HttpStatus.CREATED); //201
-		}
-		catch(EmptyResultDataAccessException e){
-		    return new ResponseEntity<BookLoan>(HttpStatus.NOT_FOUND); //404
-		}
+		return bookLoanService.createNewBookLoan(bookLoan);
 	}
-	@DeleteMapping("/bookloan/librarybranch/{libBranchId}/book/{bookId}/borrower/{cardNo}")
+	@DeleteMapping(value = "/loaned-book/librarybranch/{libBranchId}/book/{bookId}/borrower/{cardNo}")
 	public ResponseEntity<BookLoan> deleteBookLoan(@PathVariable Integer libBranchId,
 			@PathVariable Integer bookId,
 			@PathVariable Integer cardNo) {
-		if(libBranchId == null || bookId == null || cardNo == null) {
-			return new ResponseEntity<BookLoan>(HttpStatus.BAD_REQUEST);
-		}
-		try {
-			bookLoanDao.deleteById(
-					new BookLoanID(
-					libraryBranchDao.findById(libBranchId).get(), 
-					bookDao.findById(bookId).get(), 
-					borrowerDao.findById(cardNo).get()));
-		    return new ResponseEntity<BookLoan>(HttpStatus.NO_CONTENT); //204
-		}
-		catch(EmptyResultDataAccessException e){
-			return new ResponseEntity<BookLoan>(HttpStatus.BAD_REQUEST); //404 for deleting something deleting
-		}
+		return bookLoanService.deleteBookLoan(libBranchId, bookId, cardNo);
 	}
 
 }

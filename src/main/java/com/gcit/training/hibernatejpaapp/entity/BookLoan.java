@@ -23,6 +23,22 @@ public class BookLoan {
 	Date dateReturn;
 
 	
+	public BookLoan() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public BookLoan(BookLoanID bookLoanID) {
+		super();
+		this.bookLoanID = bookLoanID;
+	}
+
+	public BookLoan(Date dateOut, Date dateReturn) {
+		super();
+		this.dateOut = dateOut;
+		this.dateReturn = dateReturn;
+	}
+
 	public BookLoanID getBookLoanID() {
 		return bookLoanID;
 	}

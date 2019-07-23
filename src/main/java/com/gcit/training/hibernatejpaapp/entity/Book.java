@@ -22,6 +22,32 @@ public class Book {
     @ManyToOne
     @JoinColumn(name = "pubId")
 	private Publisher publisher;
+    
+    
+	public Book() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+	
+	public Book(Integer bookId) {
+		super();
+		this.bookId = bookId;
+	}
+
+	public Book(String title, Author author, Publisher publisher) {
+		super();
+		this.title = title;
+		this.author = author;
+		this.publisher = publisher;
+	}
+
+	public Book(Integer bookId, String title, Author author, Publisher publisher) {
+		super();
+		this.bookId = bookId;
+		this.title = title;
+		this.author = author;
+		this.publisher = publisher;
+	}
 	public Integer getBookId() {
 		return bookId;
 	}

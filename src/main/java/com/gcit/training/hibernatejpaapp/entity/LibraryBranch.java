@@ -17,6 +17,31 @@ public class LibraryBranch {
 	private String branchName;
     @Column(name = "branchAddress")
 	private String branchAddress;
+    
+    
+	public LibraryBranch() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+	
+	public LibraryBranch(Integer branchID) {
+		super();
+		this.branchID = branchID;
+	}
+
+	public LibraryBranch(Integer branchID, String branchName, String branchAddress) {
+		super();
+		this.branchID = branchID;
+		this.branchName = branchName;
+		this.branchAddress = branchAddress;
+	}
+
+	public LibraryBranch(String branchName, String branchAddress) {
+		super();
+		this.branchName = branchName;
+		this.branchAddress = branchAddress;
+	}
+
 	public Integer getBranchID() {
 		return branchID;
 	}

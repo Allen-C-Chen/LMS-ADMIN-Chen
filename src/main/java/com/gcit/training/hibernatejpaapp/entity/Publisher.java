@@ -29,9 +29,21 @@ public class Publisher {
 		// TODO Auto-generated constructor stub
 	}
 
+	public Publisher(Integer publisherId) {
+		super();
+		this.publisherId = publisherId;
+	}
+
 	public Publisher(Integer publisherId, String publisherName, String publisherAddress, String publisherPhone) {
 		super();
 		this.publisherId = publisherId;
+		this.publisherName = publisherName;
+		this.publisherAddress = publisherAddress;
+		this.publisherPhone = publisherPhone;
+	}
+
+	public Publisher(String publisherName, String publisherAddress, String publisherPhone) {
+		super();
 		this.publisherName = publisherName;
 		this.publisherAddress = publisherAddress;
 		this.publisherPhone = publisherPhone;

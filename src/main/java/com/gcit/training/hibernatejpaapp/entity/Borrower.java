@@ -22,6 +22,32 @@ public class Borrower {
 	public int getCardNo() {
 		return cardNo;
 	}
+	
+	public Borrower() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public Borrower(int cardNo) {
+		super();
+		this.cardNo = cardNo;
+	}
+
+	public Borrower(String name, String address, String phone) {
+		super();
+		this.name = name;
+		this.address = address;
+		this.phone = phone;
+	}
+
+	public Borrower(int cardNo, String name, String address, String phone) {
+		super();
+		this.cardNo = cardNo;
+		this.name = name;
+		this.address = address;
+		this.phone = phone;
+	}
+
 	public void setCardNo(int cardNo) {
 		this.cardNo = cardNo;
 	}
