@@ -58,7 +58,7 @@ public class BookLoanAdminController {
 		try {
 			Optional<BookLoan> bookLoan = bookLoanDao.findById(
 					new BookLoanID(
-							libraryBranchDao.findById(libBranchId).get(), 
+					libraryBranchDao.findById(libBranchId).get(), 
 					bookDao.findById(bookId).get(), 
 					borrowerDao.findById(cardNo).get()));
 			
