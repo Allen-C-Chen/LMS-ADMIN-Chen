@@ -41,11 +41,11 @@ public class BookLoanAdminController {
 	@Autowired
 	private LibraryBranchDao libraryBranchDao;
 	
-	@GetMapping("/bookloan")
+	@GetMapping("/book/checkout")//fix name
 	public List<BookLoan> getAllBookLoans() {
 		return bookLoanDao.findAll();
 	}
-	
+	//borrower/{cardNo}/book
 	@GetMapping("/bookloan/librarybranch/{libBranchId}/book/{bookId}/borrower/{cardNo}")
 	public ResponseEntity<BookLoan> getBookLoanByID(@PathVariable Integer libBranchId,
 			@PathVariable Integer bookId,
@@ -120,19 +120,16 @@ public class BookLoanAdminController {
 		if(libBranchId == null || bookId == null || cardNo == null) {
 			return new ResponseEntity<BookLoan>(HttpStatus.BAD_REQUEST);
 		}
-
 		try {
 			bookLoanDao.deleteById(
 					new BookLoanID(
 					libraryBranchDao.findById(libBranchId).get(), 
 					bookDao.findById(bookId).get(), 
 					borrowerDao.findById(cardNo).get()));
-			
 		    return new ResponseEntity<BookLoan>(HttpStatus.NO_CONTENT); //204
-
 		}
 		catch(EmptyResultDataAccessException e){
-			return new ResponseEntity<BookLoan>(HttpStatus.BAD_REQUEST); //404
+			return new ResponseEntity<BookLoan>(HttpStatus.BAD_REQUEST); //404 for deleting something deleting
 		}
 	}
 

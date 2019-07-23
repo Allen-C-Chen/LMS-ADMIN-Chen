@@ -1,4 +1,4 @@
-	package com.gcit.training.hibernatejpaapp.controller;
+package com.gcit.training.hibernatejpaapp.controller;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,63 +20,50 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gcit.training.hibernatejpaapp.dao.PublisherDao;
+import com.gcit.training.hibernatejpaapp.entity.Publisher;
 import com.gcit.training.hibernatejpaapp.entity.LibraryBranch;
+import com.gcit.training.hibernatejpaapp.service.PublisherService;
 import com.gcit.training.hibernatejpaapp.entity.Publisher;
 
 @RestController
-@RequestMapping("/lms/admin")
+@RequestMapping(value = "/lms/admin")
 public class PublisherAdminController {
-
 	@Autowired
-	private PublisherDao publisherDao;
-	
-	@GetMapping("/publisher")
-	public List<Publisher> getAllPublisher() {
-	    return publisherDao.findAll();
-	}
-	
+	private PublisherService publisherService;
 	// Create a new Note
-	@PostMapping("/publisher") //C
-	@ResponseStatus(HttpStatus.CREATED)
-	public ResponseEntity <Publisher> createPubisher (@Valid @RequestBody Publisher publisher) {
-		try {
-			if(publisher.getPublisherName() == null || publisher.getPublisherAddress() == null
-					|| publisher.getPublisherPhone() == null) {
-			    return new ResponseEntity<Publisher>(HttpStatus.BAD_REQUEST); //400
-			}
-			Publisher newPublisher =  publisherDao.save(publisher);
-			return new ResponseEntity<Publisher>(newPublisher, HttpStatus.CREATED); //204
-		}
-		catch(EmptyResultDataAccessException e){
-		    return new ResponseEntity<Publisher>(HttpStatus.NOT_FOUND); //404
-		}
+	@GetMapping(value = "/publishers" ,
+			produces = {"application/json", "application/xml"}) 
+	public ResponseEntity<List<Publisher>> getAllPublishers() {
+		return publisherService.getAllPublishers();
 	}
 	
-	@GetMapping("/publisher/{id}") //R
+	@PostMapping(value = "/publisher",
+			consumes = {"application/json", "application/xml"},
+			produces = {"application/json", "application/xml"})//C
+	public ResponseEntity<Publisher> createPublisher(@Valid @RequestBody Publisher publisher) {
+				return publisherService.createNewPublisher(publisher);
+	}
+	@GetMapping(path = "/publisher/{id}",  
+			produces = {"application/json", "application/xml"})  //R
 	public ResponseEntity<Publisher> getPublisherByID(@PathVariable Integer id) {
-		Optional<Publisher> publisher = publisherDao.findById(id);
-		try {
-		    return new ResponseEntity<Publisher>(publisher.get(), HttpStatus.OK); //200
-		}
-		catch(EmptyResultDataAccessException e){
-		    return new ResponseEntity<Publisher>(HttpStatus.NOT_FOUND); //404
-		}
-	}
-	@PutMapping("/publisher") //U
-	@ResponseStatus(HttpStatus.CREATED)
-	public @Valid Publisher  updatePublisher(@Valid @RequestBody Publisher publisher) {
-		return publisherDao.save(publisher);		
+		return publisherService.getPublisherById(id);
 	}
 	
-	@DeleteMapping("/publisher/{id}") //D
-	public ResponseEntity<Publisher> deletePost(@PathVariable Integer id){
-		try {
-			publisherDao.deleteById(id);
-		    return new ResponseEntity<Publisher>(HttpStatus.NO_CONTENT); //204
-
-		}
-		catch(EmptyResultDataAccessException e){
-			return new ResponseEntity<Publisher>(HttpStatus.BAD_REQUEST); //404
-		}
+	@PutMapping(value = "/publisher/{id}",
+			consumes = {"application/json", "application/xml"},
+			produces = {"application/json", "application/xml"})//C
+	public ResponseEntity<Publisher> updatePublisher(
+			@PathVariable Integer id,
+			@Valid @RequestBody Publisher publisher) {
+		return publisherService.updatePublisher(id, publisher);
 	}
+	@DeleteMapping(value = "/publisher/{id}") //D
+	public ResponseEntity<Publisher> deletePublisher(@PathVariable Integer id){
+		return publisherService.deletePublisher(id);
+	}
+
+
+
+
+	
 }

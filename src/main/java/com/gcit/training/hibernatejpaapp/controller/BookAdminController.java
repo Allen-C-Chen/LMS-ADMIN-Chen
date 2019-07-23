@@ -21,61 +21,49 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.gcit.training.hibernatejpaapp.dao.BookDao;
 import com.gcit.training.hibernatejpaapp.entity.Book;
+import com.gcit.training.hibernatejpaapp.entity.LibraryBranch;
+import com.gcit.training.hibernatejpaapp.service.BookService;
+import com.gcit.training.hibernatejpaapp.entity.Book;
 
 @RestController
-@RequestMapping("/lms/admin")
+@RequestMapping(value = "/lms/admin")
 public class BookAdminController {
 	@Autowired
-	private BookDao bookDao;
-	@GetMapping("/book")
-	public List<Book> getAllBooks() {
-		return bookDao.findAll();
-	}
+	private BookService bookService;
 	// Create a new Note
-	@PostMapping("/book") //C
-	@ResponseStatus(HttpStatus.CREATED)
+	@GetMapping(value = "/books" ,
+			produces = {"application/json", "application/xml"}) 
+	public ResponseEntity<List<Book>> getAllBooks() {
+		return bookService.getAllBooks();
+	}
+	
+	@PostMapping(value = "/book",
+			consumes = {"application/json", "application/xml"},
+			produces = {"application/json", "application/xml"})//C
 	public ResponseEntity<Book> createBook(@Valid @RequestBody Book book) {
-		if(book.getTitle() == null || book.getAuthor() == null || book.getPublisher() == null) {
-		    return new ResponseEntity<Book>(HttpStatus.BAD_REQUEST); //400
-		}
-		try {
-			Book newBook = bookDao.save(book);
-			return new ResponseEntity<Book>(newBook, HttpStatus.CREATED); //204
-		}
-		catch(EmptyResultDataAccessException e){
-		    return new ResponseEntity<Book>(HttpStatus.NOT_FOUND); //404
-		}
-	    //return bookDao.save(book);
+				return bookService.createNewBook(book);
 	}
-	@GetMapping("/book/{id}") //R
+	@GetMapping(path = "/book/{id}",  
+			produces = {"application/json", "application/xml"})  //R
 	public ResponseEntity<Book> getBookByID(@PathVariable Integer id) {
-		Optional<Book> book = bookDao.findById(id);
-
-		try {
-			return new ResponseEntity<Book>(book.get(), HttpStatus.OK); //200
-		}
-		catch(EmptyResultDataAccessException e){
-		    return new ResponseEntity<Book>(HttpStatus.NOT_FOUND); //404
-		}
-
-		//return bookDao.findById(id);
+		return bookService.getBookById(id);
 	}
-	@PutMapping("/book") //U
-	@ResponseStatus(HttpStatus.CREATED)
-	public void updateBook(@Valid @RequestBody Book book) {
-		bookDao.save(book);
+	
+	@PutMapping(value = "/book/{id}",
+			consumes = {"application/json", "application/xml"},
+			produces = {"application/json", "application/xml"})//C
+	public ResponseEntity<Book> updateBook(
+			@PathVariable Integer id,
+			@Valid @RequestBody Book book) {
+		return bookService.updateBook(id, book);
 	}
-	@DeleteMapping("/book/{id}") //D
-	public ResponseEntity<Book> deleteBook(@PathVariable Integer id) {
-		try {
-			bookDao.deleteById(id);
-		    return new ResponseEntity<Book>(HttpStatus.NO_CONTENT); //204
+	@DeleteMapping(value = "/book/{id}") //D
+	public ResponseEntity<Book> deleteBook(@PathVariable Integer id){
+		return bookService.deleteBook(id);
+	}
 
-		}
-		catch(EmptyResultDataAccessException e){
-			return new ResponseEntity<Book>(HttpStatus.BAD_REQUEST); //404
-		}
-	}
+
+
 
 	
 }

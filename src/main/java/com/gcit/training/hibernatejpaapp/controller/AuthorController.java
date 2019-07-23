@@ -22,64 +22,48 @@ import org.springframework.web.bind.annotation.RestController;
 import com.gcit.training.hibernatejpaapp.dao.AuthorDao;
 import com.gcit.training.hibernatejpaapp.entity.Author;
 import com.gcit.training.hibernatejpaapp.entity.LibraryBranch;
+import com.gcit.training.hibernatejpaapp.service.AuthorService;
 import com.gcit.training.hibernatejpaapp.entity.Author;
 
 @RestController
-@RequestMapping("/lms/admin")
+@RequestMapping(value = "/lms/admin")
 public class AuthorController {
 	@Autowired
-	private AuthorDao authorDao;
+	private AuthorService authorService;
 	// Create a new Note
-	@GetMapping("/author")
-	public List<Author> getAllAuthors() {
-		return authorDao.findAll();
+	@GetMapping(value = "/authors" ,
+			produces = {"application/json", "application/xml"}) 
+	public ResponseEntity<List<Author>> getAllAuthors() {
+		return authorService.getAllAuthors();
 	}
 	
-	@PostMapping("/author") //C
+	@PostMapping(value = "/author",
+			consumes = {"application/json", "application/xml"},
+			produces = {"application/json", "application/xml"})//C
 	public ResponseEntity<Author> createAuthor(@Valid @RequestBody Author author) {
-
-		try {
-			if(author.getAuthorName() == null) {
-			    return new ResponseEntity<Author>(HttpStatus.BAD_REQUEST); //400
-			}
-			Author newAuthor =  authorDao.save(author);
-
-			return new ResponseEntity<Author>(newAuthor, HttpStatus.CREATED); //204
-		}
-		catch(EmptyResultDataAccessException e){
-		    return new ResponseEntity<Author>(HttpStatus.NOT_FOUND); //404
-		}
+				return authorService.createNewAuthor(author);
 	}
-	
-	@GetMapping("/author/{id}") //R
+	@GetMapping(path = "/author/{id}",  
+			produces = {"application/json", "application/xml"})  //R
 	public ResponseEntity<Author> getAuthorByID(@PathVariable Integer id) {
-		Optional<Author> author = authorDao.findById(id);
-
-		try {
-			return new ResponseEntity<Author>(author.get(), HttpStatus.OK); 
-		}
-		catch(EmptyResultDataAccessException e){
-		    return new ResponseEntity<Author>(HttpStatus.NOT_FOUND); //404
-		}
-	}
-	@PutMapping("/author") //U
-	@ResponseStatus(HttpStatus.CREATED)
-	public void updateAuthor(@Valid @RequestBody Author author) {
-		authorDao.save(author);
+		return authorService.getAuthorById(id);
 	}
 	
-	
-	@DeleteMapping("/author/{id}") //D
-	public ResponseEntity<Author> deleteAuthor(@PathVariable Integer id) {
-		try {
-			authorDao.deleteById(id);
-		    return new ResponseEntity<Author>(HttpStatus.NO_CONTENT); //204
-
-		}
-		catch(EmptyResultDataAccessException e){
-			return new ResponseEntity<Author>(HttpStatus.BAD_REQUEST); //404
-		}
-		
+	@PutMapping(value = "/author/{id}",
+			consumes = {"application/json", "application/xml"},
+			produces = {"application/json", "application/xml"})//C
+	public ResponseEntity<Author> updateAuthor(
+			@PathVariable Integer id,
+			@Valid @RequestBody Author author) {
+		return authorService.updateAuthor(id, author);
 	}
+	@DeleteMapping(value = "/author/{id}") //D
+	public ResponseEntity<Author> deleteAuthor(@PathVariable Integer id){
+		return authorService.deleteAuthor(id);
+	}
+
+
+
+
 	
 }

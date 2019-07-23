@@ -24,6 +24,19 @@ public class Publisher {
     @Column(name = "publisherPhone")
 	private String publisherPhone;
 
+	public Publisher() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public Publisher(Integer publisherId, String publisherName, String publisherAddress, String publisherPhone) {
+		super();
+		this.publisherId = publisherId;
+		this.publisherName = publisherName;
+		this.publisherAddress = publisherAddress;
+		this.publisherPhone = publisherPhone;
+	}
+
 	public Integer getPublisherId() {
 		return publisherId;
 	}
@@ -54,6 +67,12 @@ public class Publisher {
 
 	public void setPublisherPhone(String publisherPhone) {
 		this.publisherPhone = publisherPhone;
+	}
+
+	@Override
+	public String toString() {
+		return "Publisher [publisherId=" + publisherId + ", publisherName=" + publisherName + ", publisherAddress="
+				+ publisherAddress + ", publisherPhone=" + publisherPhone + "]";
 	}
     
 

@@ -22,60 +22,48 @@ import org.springframework.web.bind.annotation.RestController;
 import com.gcit.training.hibernatejpaapp.dao.BorrowerDao;
 import com.gcit.training.hibernatejpaapp.entity.Borrower;
 import com.gcit.training.hibernatejpaapp.entity.LibraryBranch;
+import com.gcit.training.hibernatejpaapp.service.BorrowerService;
+import com.gcit.training.hibernatejpaapp.entity.Borrower;
 
 @RestController
-@RequestMapping("/lms/admin")
-
+@RequestMapping(value = "/lms/admin")
 public class BorrowerAdminController {
 	@Autowired
-	private BorrowerDao borrowerDao;
-	@GetMapping("/borrower")
-	public List<Borrower> getAllBorrower() {
-	    return borrowerDao.findAll();
-	}
-	
+	private BorrowerService borrowerService;
 	// Create a new Note
-	@PostMapping("/borrower") //C
-	@ResponseStatus(HttpStatus.CREATED)
-	public ResponseEntity<Borrower> createNote(@Valid @RequestBody Borrower borrower) {	
-		try {
-			if(borrower.getName() == null || borrower.getPhone() == null || borrower.getAddress() == null) {
-			    return new ResponseEntity<Borrower>(HttpStatus.BAD_REQUEST); //400
-			}
-			Borrower newBorrower = borrowerDao.save(borrower);
-			return new ResponseEntity<Borrower>(newBorrower, HttpStatus.CREATED); //204
-
-		}
-		catch(EmptyResultDataAccessException e){
-		    return new ResponseEntity<Borrower>(HttpStatus.NOT_FOUND); //404
-		}
+	@GetMapping(value = "/borrowers" ,
+			produces = {"application/json", "application/xml"}) 
+	public ResponseEntity<List<Borrower>> getAllBorrowers() {
+		return borrowerService.getAllBorrowers();
 	}
 	
-	@GetMapping("/borrower/{id}") //R
+	@PostMapping(value = "/borrower",
+			consumes = {"application/json", "application/xml"},
+			produces = {"application/json", "application/xml"})//C
+	public ResponseEntity<Borrower> createBorrower(@Valid @RequestBody Borrower borrower) {
+				return borrowerService.createNewBorrower(borrower);
+	}
+	@GetMapping(path = "/borrower/{id}",  
+			produces = {"application/json", "application/xml"})  //R
 	public ResponseEntity<Borrower> getBorrowerByID(@PathVariable Integer id) {
-		Optional<Borrower> borrower = borrowerDao.findById(id);
-		try {
-		    return new ResponseEntity<Borrower>(borrower.get(), HttpStatus.OK); //200
-		}
-		catch(EmptyResultDataAccessException e){
-		    return new ResponseEntity<Borrower>(HttpStatus.NOT_FOUND); //404
-		}
-	}
-	@PutMapping("/borrower") //U
-	@ResponseStatus(HttpStatus.CREATED)
-	public @Valid Borrower  updateBorrower(@Valid @RequestBody Borrower borrower) {
-		return borrowerDao.save(borrower);		
+		return borrowerService.getBorrowerById(id);
 	}
 	
-	@DeleteMapping("/borrower/{id}") //D
-	public ResponseEntity<Borrower> deletePost(@PathVariable Integer id){
-		try {
-			borrowerDao.deleteById(id);
-		    return new ResponseEntity<Borrower>(HttpStatus.NO_CONTENT); //204
-
-		}
-		catch(EmptyResultDataAccessException e){
-			return new ResponseEntity<Borrower>(HttpStatus.BAD_REQUEST); //404
-		}
+	@PutMapping(value = "/borrower/{id}",
+			consumes = {"application/json", "application/xml"},
+			produces = {"application/json", "application/xml"})//C
+	public ResponseEntity<Borrower> updateBorrower(
+			@PathVariable Integer id,
+			@Valid @RequestBody Borrower borrower) {
+		return borrowerService.updateBorrower(id, borrower);
 	}
+	@DeleteMapping(value = "/borrower/{id}") //D
+	public ResponseEntity<Borrower> deleteBorrower(@PathVariable Integer id){
+		return borrowerService.deleteBorrower(id);
+	}
+
+
+
+
+	
 }
