@@ -8,7 +8,7 @@ public class HibernateJpaAppApplication {
 	//Allen is here testing webhooks
 	//testing two
 	//testing three
-	//testting new idea
+	//start of aws cloud formation
 	public static void main(String[] args) {
 		SpringApplication.run(HibernateJpaAppApplication.class, args);
 		
