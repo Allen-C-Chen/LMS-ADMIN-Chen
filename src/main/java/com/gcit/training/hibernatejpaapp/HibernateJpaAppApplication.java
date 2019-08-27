@@ -11,6 +11,7 @@ public class HibernateJpaAppApplication {
 	//start of aws cloud formation
 	// jenkins #1
 	// Jenkins #2
+	// Jenkis #3 test after crashing ec2
 	public static void main(String[] args) {
 		SpringApplication.run(HibernateJpaAppApplication.class, args);
 		
