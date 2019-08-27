@@ -14,6 +14,7 @@ public class HibernateJpaAppApplication {
 	// Jenkins #3 test after crashing ec2
 	//testing after I dumb
 	//teting 5
+	//new
 	public static void main(String[] args) {
 		SpringApplication.run(HibernateJpaAppApplication.class, args);
 		
