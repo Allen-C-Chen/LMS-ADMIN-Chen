@@ -10,6 +10,7 @@ public class HibernateJpaAppApplication {
 	//testing three
 	//start of aws cloud formation
 	// jenkins #1
+	// Jenkins #2
 	public static void main(String[] args) {
 		SpringApplication.run(HibernateJpaAppApplication.class, args);
 		
