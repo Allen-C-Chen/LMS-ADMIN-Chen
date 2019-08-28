@@ -17,6 +17,7 @@ public class HibernateJpaAppApplication {
 	//new
 	//making my thing private
 	///no more private
+	//hi
 	public static void main(String[] args) {
 		SpringApplication.run(HibernateJpaAppApplication.class, args);
 		
