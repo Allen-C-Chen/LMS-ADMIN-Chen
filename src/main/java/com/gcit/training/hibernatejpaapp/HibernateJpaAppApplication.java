@@ -16,6 +16,7 @@ public class HibernateJpaAppApplication {
 	//teting 5
 	//new
 	//making my thing private
+	///no more private
 	public static void main(String[] args) {
 		SpringApplication.run(HibernateJpaAppApplication.class, args);
 		
