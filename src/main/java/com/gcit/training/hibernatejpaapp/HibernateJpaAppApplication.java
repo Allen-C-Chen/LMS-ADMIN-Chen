@@ -15,6 +15,7 @@ public class HibernateJpaAppApplication {
 	//testing after I dumb
 	//teting 5
 	//new
+	//making my thing private
 	public static void main(String[] args) {
 		SpringApplication.run(HibernateJpaAppApplication.class, args);
 		
